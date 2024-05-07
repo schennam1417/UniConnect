@@ -5,6 +5,10 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniConnectAPI", "UniConnectAPI\UniConnectAPI.csproj", "{CF8E1282-4957-47B4-97C5-B2FBCE23585C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniconnect", "Uniconnect\Uniconnect.csproj", "{4F7520DF-AD76-4CF2-B237-89E985BB0CA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UniConnectUtility", "UniConnectUtility\UniConnectUtility.csproj", "{0D56B60F-B002-4570-B147-71A3F414A286}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{CF8E1282-4957-47B4-97C5-B2FBCE23585C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF8E1282-4957-47B4-97C5-B2FBCE23585C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF8E1282-4957-47B4-97C5-B2FBCE23585C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F7520DF-AD76-4CF2-B237-89E985BB0CA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F7520DF-AD76-4CF2-B237-89E985BB0CA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F7520DF-AD76-4CF2-B237-89E985BB0CA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F7520DF-AD76-4CF2-B237-89E985BB0CA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D56B60F-B002-4570-B147-71A3F414A286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D56B60F-B002-4570-B147-71A3F414A286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D56B60F-B002-4570-B147-71A3F414A286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D56B60F-B002-4570-B147-71A3F414A286}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
