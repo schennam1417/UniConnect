@@ -13,7 +13,9 @@ namespace UniConnectAPI.Mappings
 
             CreateMap<Student, AddStudentDTO>();
             CreateMap<AddStudentDTO, Student>();
-            CreateMap<StudentDTO, UpdateStudentDTO>().ReverseMap();
+            CreateMap<Student, UpdateStudentDTO>();
+            CreateMap<UpdateStudentDTO, Student>();
+            
 
         }
     }

@@ -5,10 +5,12 @@ namespace UniConnectAPI.Repository.IRepository
 {
     public interface IStudentRepository 
     {
-        Task<List<Student>> GetAll(Expression<Func<Student,bool>> filter=null);
-        Task<Student> Get(Expression<Func<Student,bool>> filter = null);
-        Task Create(Student student);
-        Task Remove(Student student);
+        Task<List<Student>> GetAllAsync(Expression<Func<Student,bool>> filter=null);
+        Task<Student> GetAsync(Expression<Func<Student,bool>> filter = null);
+        Task CreateAsync(Student student);
+        Task RemoveAsync(Student student);
+
+        Task UpdateAsync(Student student);
 
         Task Save();
 
