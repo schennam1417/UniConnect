@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using UniConnectAPI.Data;
 using UniConnectAPI.Mappings;
 using UniConnectAPI.Models;
+using UniConnectAPI.Repository;
+using UniConnectAPI.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("StudentDbConnectionString")));
+builder.Services.AddScoped<IStudentRepository,StudentRepository>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 var app = builder.Build();
 
