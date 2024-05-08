@@ -1,107 +1,128 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using UniConnectAPI.Data;
 using UniConnectAPI.Models;
 using UniConnectAPI.Models.DTO;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using UniConnectAPI.logging;
 
 namespace UniConnectAPI.Controllers
 {
     [Route("api/StudentAPI")]
     [ApiController]
-    public class StudentAPIController : ControllerBase
+    public class StudentAPIController : Controller
     {
+        private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly ILogging _logger;
-
-        public StudentAPIController(IMapper mapper,ILogging logger )
+        private int studentIDCounter = 0;
+        private static readonly object lockObject = new object();
+        public StudentAPIController(ApplicationDbContext dbContext,IMapper mapper)
         {
-            this._mapper = mapper;
-            this._logger = logger;
-            
+            this._dbContext = dbContext;
+            _mapper = mapper;
         }
+
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<IEnumerable<StudentDTO>> GetStudents()
+        public ActionResult Get()
         {
-            _logger.Log("Getting all Students","");
-            return Ok(StudentDataStore.StudentList);
-            
+            return Ok(_dbContext.Students.ToList());
         }
 
-
-        [HttpGet("{StudentID}", Name = "GetStudent")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<StudentDTO> GetStudent(string StudentID)
+        [HttpGet]
+        [Route("StudentID")]
+        public ActionResult GetStudent(string StudentID)
         {
-            _logger.Log("Getting Student By ID","");
-            var student = StudentDataStore.StudentList.FirstOrDefault(u => u.StudentID == StudentID);
-            if (student == null) { return NotFound(); }
+            var student= _dbContext.Students.SingleOrDefault(u=>u.StudentID==StudentID);
             return Ok(student);
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<StudentDTO> EnrollStudent([FromBody] StudentDTO studentDto)
+        public ActionResult AddStudent([FromBody] AddStudentDTO addstudent)
         {
-            _logger.Log("Adding Student", "");
-            if (studentDto == null) 
+            try
             {
-                _logger.Log("error while adding","Student");
-                return BadRequest(studentDto); 
+                var student=_mapper.Map<Student>(addstudent);
+                //student.StudentID = "24000001";
+                student.StudentID = GenerateStudentID();
+                _dbContext.Students.Add(student);
+                _dbContext.SaveChanges();
+                return Ok(CreatedAtAction(nameof(GetStudent), new {StudentID= student.StudentID},student));
             }
-            //studentDto.StudentID = StudentDataStore.StudentList.OrderByDescending(u => u.StudentID).FirstOrDefault().StudentID + 1;
-            if (StudentDataStore.StudentList.FirstOrDefault(u => u.StudentName.ToLower() == studentDto.StudentName.ToLower()) != null)
+            catch (Exception)
             {
-                ModelState.AddModelError("CustomError", "Student Already Exists");
-                return BadRequest(ModelState);
+
+                throw;
             }
-            StudentDataStore.StudentList.Add(studentDto);
-            return CreatedAtRoute("GetStudent", new { StudentID = studentDto.StudentID }, studentDto);
         }
 
-        [HttpDelete("{StudentID}",Name = "DeleteStudent")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult DeleteStudent(string StudentID) 
+        private string GenerateStudentID()
         {
-            _logger.Log("Deleting Student By ID","");
-            if (StudentID==null)
-            { return BadRequest(); }
-            var student = StudentDataStore.StudentList.FirstOrDefault(u=>u.StudentID== StudentID);
-            if (student == null) { return NotFound(); }
-            StudentDataStore.StudentList.Remove(student);
-            return NoContent();
+            
+            lock (lockObject)
+            {
+                // Getting the current year as first 2 digits
+                string currentYear = DateTime.Now.Year.ToString().Substring(2);
+
+        // Fetch all student IDs from the database
+            var studentIds = _dbContext.Students
+            .Where(s => s.StudentID.StartsWith(currentYear)) // Assuming student IDs start with the current year
+            .Select(s => s.StudentID)
+            .ToList();
+
+                // If no student IDs are found, set the counter to 0
+                if (studentIds.Count == 0)
+                {
+                    studentIDCounter = 0;
+                }
+                else
+                {
+                    // Get the maximum numeric part of the student IDs
+                    var maxNumericID = studentIds
+                        .Select(id => int.Parse(id.Substring(2))) // Assuming '24' as prefix
+                        .Max();
+
+                // Set the student ID counter to the maximum numeric ID
+                studentIDCounter = maxNumericID;
+                }
+
+                // Increment the counter for the next student ID
+                studentIDCounter++;
+
+                // Formatting student ID with current year and six-digit number
+                string studentID = $"{currentYear}{studentIDCounter:D6}";
+                return studentID;
+            }
         }
 
-        [HttpPut("{StudentID}",Name ="UpdateStudent")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
-        public IActionResult UpdateStudent(string StudentID, [FromBody]UpdateStudentDTO updateStudentDTO)
+        [HttpPut]
+        [Route("StudentID")]
+        public ActionResult Edit(string StudentID, [FromBody] UpdateStudentDTO updateStudentDTO)
         {
-            _logger.Log("Updating Student By ID", "");
-            if (StudentID==null) {  return BadRequest(); }
-            var student = StudentDataStore.StudentList.FirstOrDefault(x => x.StudentID== StudentID);
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-
+            var student=_dbContext.Students.FirstOrDefault(u=>u.StudentID == StudentID);
+            if (student == null) { return NotFound("Student Not found"); }
             student.StudentName = updateStudentDTO.StudentName;
-            student.WelshLanguageProficiency = updateStudentDTO.WelshLanguageProficiency;
-            return NoContent();
+            student.WelshLanguageProficiency=updateStudentDTO.WelshLanguageProficiency;
+            _dbContext.SaveChanges();
+            return Ok(student);
+
         }
-
-
+                
+        [HttpDelete]
+        [Route("StudentID")]
+        public ActionResult Delete(String StudentID)
+        {
+            try
+            {
+                var student = _dbContext.Students.FirstOrDefault(u => u.StudentID == StudentID);
+                if (student == null) { return NotFound("Student not found"); }
+                _dbContext.Students.Remove(student);
+                _dbContext.SaveChanges();
+                return NoContent();
+            }
+            catch(Exception ex) 
+            {
+                throw;
+            }
+        }
     }
 }

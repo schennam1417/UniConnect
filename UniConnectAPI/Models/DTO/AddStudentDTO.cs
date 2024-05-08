@@ -6,6 +6,8 @@ namespace UniConnectAPI.Models.DTO
     {
         public string StudentName { get; set; }
         public string DateOfBirth { get; set; }
+
+        public int Occupancy { get; set; }
         public string UniversityCourse { get; set; }
         public WelshLanguageProficiency WelshLanguageProficiency { get; set; }
         public string StartDate { get; set; }
