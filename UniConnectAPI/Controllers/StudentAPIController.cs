@@ -132,8 +132,8 @@ namespace UniConnectAPI.Controllers
 
         
 
-        [HttpPut]
-        [Route("StudentID")]
+        [HttpPut("{StudentID}")]
+        
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<APIResponse>> UpdateStudent(string StudentID, [FromBody] UpdateStudentDTO updateStudentDTO)
@@ -148,24 +148,32 @@ namespace UniConnectAPI.Controllers
             try
             {
 
-                if (updateStudentDTO == null) 
+                if (updateStudentDTO == null ||  StudentID!=updateStudentDTO.StudentId) 
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response); 
                 }
+                //Student stdt = _mapper.Map<Student>(updateStudentDTO);
+                
+                var existingStudent = await _dbStudent.GetAsync(u => u.StudentID== StudentID);
 
-                var stdt = await _dbStudent.GetAsync(u => u.StudentID == StudentID);
-
-                if (stdt == null) 
+                // If student not found, return 404 Not Found
+                if (existingStudent == null)
                 {
                     _response.StatusCode = HttpStatusCode.NotFound;
-                    return NotFound(_response); 
+                    return NotFound(_response);
                 }
-                stdt.StudentName = updateStudentDTO.StudentName;
-                stdt.WelshLanguageProficiency = updateStudentDTO.WelshLanguageProficiency;
+
+                // Update the properties of the existing student entity with values from the DTO
+                existingStudent.StudentName = updateStudentDTO.StudentName;
+                existingStudent.WelshLanguageProficiency = updateStudentDTO.WelshLanguageProficiency;
+
+                //stdt.StudentName = updateStudentDTO.StudentName;
+                //stdt.WelshLanguageProficiency = updateStudentDTO.WelshLanguageProficiency;
                 //Student student = _mapper.Map<Student>(updateStudentDTO); 
 
-                await _dbStudent.UpdateAsync(stdt);
+               await _dbStudent.UpdateAsync(existingStudent);
+               
                 _response.StatusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 return Ok(_response);
@@ -180,9 +188,8 @@ namespace UniConnectAPI.Controllers
             //return NoContent();
 
         }
-                
-        [HttpDelete]
-        [Route("StudentID")]
+
+        [HttpDelete("{StudentID}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

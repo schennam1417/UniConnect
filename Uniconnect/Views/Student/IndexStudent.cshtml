@@ -47,8 +47,8 @@
                     <td>@item.StartDate</td>
                     <td>@item.EndDate</td>
                     <td>
-                        <a asp-controller="Student" asp-action="UpdateStudent" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
-                        <a asp-controller="Student" asp-action="DeleteStudent" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                        <a asp-controller="Student" asp-action="UpdateStudent" asp-route-StudentID="@item.StudentID" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-controller="Student" asp-action="DeleteStudent" asp-route-StudentID="@item.StudentID" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
                     </td>
 
                 </tr>

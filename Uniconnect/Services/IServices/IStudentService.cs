@@ -14,6 +14,6 @@ namespace Uniconnect.Services.IServices
         
         Task<T> RemoveAsync<T>(string StudentID);
 
-        Task<T> UpdateAsync<T>(string StudentID,UpdateStudentDTO updatestudentdto);
+        Task<T> UpdateAsync<T>(UpdateStudentDTO updateStudentDTO);
     }
 }

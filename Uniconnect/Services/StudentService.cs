@@ -56,13 +56,13 @@ namespace Uniconnect.Services
             });
         }
 
-        public Task<T> UpdateAsync<T>(string StudentID, UpdateStudentDTO updatestudentdto)
+        public Task<T> UpdateAsync<T>(UpdateStudentDTO updateStudentDTO)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.PUT,
-                Data = updatestudentdto,
-                Url = studentUrl + "/api/StudentAPI/"+StudentID
+                Data = updateStudentDTO,
+                Url = studentUrl + "/api/StudentAPI/"+ updateStudentDTO.StudentID
             });
         }
     }

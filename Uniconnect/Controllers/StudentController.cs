@@ -6,6 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 using Uniconnect.Models;
 using Uniconnect.Models.DTO;
 using Uniconnect.Services.IServices;
+using UniConnect.Models.DTO;
 
 namespace Uniconnect.Controllers
 {
@@ -53,6 +54,62 @@ namespace Uniconnect.Controllers
             }
 
             return View(addStudentDTO);
+
+        }
+
+        public async Task<IActionResult> UpdateStudent(string StudentID)
+        {
+            var response = await _studentService.GetAsync<APIResponse>(StudentID);
+            if (response != null && response.IsSuccess)
+            {
+                StudentDTO model=JsonConvert.DeserializeObject<StudentDTO>(Convert.ToString(response.Result));
+                //return RedirectToAction(nameof(IndexStudent));
+                return View(_mapper.Map<UpdateStudentDTO>(model));
+            }
+            return NotFound();
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> UpdateStudent(UpdateStudentDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _studentService.UpdateAsync<APIResponse>(model);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexStudent));
+                }
+
+            }
+
+            return View(model);
+
+        }
+
+        public async Task<IActionResult> DeleteStudent(string StudentID)
+        {
+            var response = await _studentService.GetAsync<APIResponse>(StudentID);
+            if (response != null && response.IsSuccess)
+            {
+                StudentDTO model = JsonConvert.DeserializeObject<StudentDTO>(Convert.ToString(response.Result));
+                //return RedirectToAction(nameof(IndexStudent));
+                return View(model);
+            }
+            return NotFound();
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteStudent(StudentDTO model)
+        {
+                var response = await _studentService.RemoveAsync<APIResponse>(model.StudentID);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexStudent));
+                }
+
+            return View(model);
 
         }
 

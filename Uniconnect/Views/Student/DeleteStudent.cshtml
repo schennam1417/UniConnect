@@ -1,0 +1,70 @@
+﻿@model Uniconnect.Models.DTO.StudentDTO
+
+<form asp-action="DeleteStudent">
+    <br />
+    <div class="container border p-3">
+        <h1 class="text-primary"> Delete Student</h1>
+        <br />
+        <input hidden asp-for="StudentID" />
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-2">
+                <label asp-for="StudentName" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="StudentName" disabled class="form-control" />
+                
+            </div>
+            <div class="col-2">
+                <label asp-for="DateOfBirth" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="DateOfBirth" disabled class="form-control" />
+                
+            </div>
+
+            <div class="col-2">
+                <label asp-for="UniversityCourse" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="UniversityCourse" disabled class="form-control" />
+               
+            </div>
+
+            <div class="col-2">
+                <label asp-for="WelshLanguageProficiency" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="WelshLanguageProficiency" disabled class="form-control" />
+               
+            </div>
+
+            <div class="col-2">
+                <label asp-for="StartDate" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="StartDate" disabled class="form-control" />
+               
+            </div>
+
+            <div class="col-2">
+                <label asp-for="EndDate" class="control-label pt-2" style="font-size:20px;"></label>
+            </div>
+            <div class="col-10 pb-3">
+                <input asp-for="EndDate" disabled class="form-control" />
+               
+            </div>
+            <div class="col-5 offset-2">
+                <a asp-action="IndexStudent" asp-controller="Student" class="btn-primary btn form-control">Back To List</a>
+            </div>
+
+            <div class="col-5">
+                <input type="Submit" value="Delete" class="btn btn-danger form-control" />
+            </div>
+
+        </div>
+    </div>
+</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
