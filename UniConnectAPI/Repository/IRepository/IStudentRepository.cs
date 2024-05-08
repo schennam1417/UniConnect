@@ -12,7 +12,7 @@ namespace UniConnectAPI.Repository.IRepository
 
         Task<Student> UpdateAsync(Student student);
 
-        
+        Task<List<Student>> SearchAsync(string query);
 
     }
 }

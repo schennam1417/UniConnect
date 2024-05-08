@@ -112,6 +112,20 @@ namespace Uniconnect.Controllers
             return View(model);
 
         }
+        [HttpGet]
+        public async Task<ActionResult> SearchStudent(string searchString)
+        {
+            List<StudentDTO> list = new();
+            var response = await _studentService.SearchAsync<APIResponse>(searchString);
+            if (response == null)
+            { return View(); }
+            if (response != null)
+            {
+                list = JsonConvert.DeserializeObject<List<StudentDTO>>(Convert.ToString(response.Result));
+            }
+            return View(list);
+
+        }
 
     }
 }

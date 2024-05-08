@@ -6,6 +6,7 @@ using System.Net;
 using UniConnectAPI.Data;
 using UniConnectAPI.Models;
 using UniConnectAPI.Models.DTO;
+using UniConnectAPI.Repository;
 using UniConnectAPI.Repository.IRepository;
 
 namespace UniConnectAPI.Controllers
@@ -101,11 +102,11 @@ namespace UniConnectAPI.Controllers
                 //_dbContext.Students.Add(student);
                 //_dbContext.SaveChanges();
                 //return Ok(CreatedAtAction(nameof(GetStudent), new {StudentID= student.StudentID},student));
-                if (await _dbStudent.GetAsync(u => u.StudentName.ToLower() == addstudent.StudentName.ToLower()) != null)
-                {
-                    ModelState.AddModelError("Custom Error", "Student Already Exists");
-                    return BadRequest(ModelState);
-                }
+                //if (await _dbStudent.GetAsync(u => u.StudentName.ToLower() == addstudent.StudentName.ToLower()) != null)
+                //{
+                //    ModelState.AddModelError("Custom Error", "Student Already Exists");
+                //    return BadRequest(ModelState);
+                //}
                 if(addstudent==null)
                 {
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -220,6 +221,30 @@ namespace UniConnectAPI.Controllers
                 _response.ErrorMessages = new List<string> { ex.ToString() };
             }
             return _response;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Route("search")]
+        public async Task<ActionResult<APIResponse>> SearchStudentsByIdORName([FromQuery] string searchQuery)
+        {
+            // Search students by name or ID
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return BadRequest();
+            }
+            var searchResults = await _dbStudent.SearchAsync(searchQuery);
+
+            if (searchResults == null || !searchResults.Any())
+            {
+                return NotFound();
+            }
+
+            _response.Result = _mapper.Map<List<StudentDTO>>(searchResults);
+            _response.StatusCode = HttpStatusCode.OK;
+            return Ok(_response);
         }
     }
 }

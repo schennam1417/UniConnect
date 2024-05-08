@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Uniconnect.Models.DTO.StudentDTO>
+
+<br />
+<div class="container p-4 border">
+    @if (Model != null && Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Student Name
+                    </th>
+                    <th>
+                        Date of Birth
+                    </th>
+                    <th>
+                        University Course
+                    </th>
+                    <th>
+                        Welsh Language Proficiency
+                    </th>
+                    <th>
+                        Start Date
+                    </th>
+                    <th>
+                        End Date
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.StudentName</td>
+                        <td>@item.DateOfBirth</td>
+                        <td>@item.UniversityCourse</td>
+                        <td>@item.WelshLanguageProficiency</td>
+                        <td>@item.StartDate</td>
+                        <td>@item.EndDate</td>
+                        <td>
+                            <a asp-controller="Student" asp-action="DeleteStudent" asp-route-StudentID="@item.StudentID" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No data found.</p>
+    }
+</div>

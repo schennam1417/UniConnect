@@ -5,6 +5,14 @@
         <div class="col">
             <h1 class="text-primary">Student List</h1>
         </div>
+
+        <form asp-controller="Student" asp-action="SearchStudent" method="get">
+            <p>
+                Search Student: <input type="text" name="SearchString" />
+                <button type="submit"><i class="bi bi-search"></i></button>
+            </p>
+        </form>
+
         <div class="col text-end pt-1">
             <a asp-controller="Student" asp-action="EnrollStudent" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i>Enroll New Student</a>
         </div>

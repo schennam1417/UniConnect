@@ -101,5 +101,13 @@ namespace UniConnectAPI.Repository
             await _db.SaveChangesAsync();
             return student;
         }
+
+        public async Task<List<Student>> SearchAsync(string searchQuery)
+        {
+            return await _db.Students
+                .Where(x => x.StudentID.Contains(searchQuery) || x.StudentName.ToLower().Contains(searchQuery.ToLower()))
+                .ToListAsync();
+
+        }
     }
 }

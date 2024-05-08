@@ -56,6 +56,16 @@ namespace Uniconnect.Services
             });
         }
 
+        public Task<T?> SearchAsync<T>(string searchString)
+        {
+            return SendAsync<T>(new APIRequest()
+            {
+                ApiType = SD.ApiType.GET,
+
+                Url = studentUrl + "/api/StudentAPI/search?searchQuery=" + searchString
+            });
+        }
+
         public Task<T> UpdateAsync<T>(UpdateStudentDTO updateStudentDTO)
         {
             return SendAsync<T>(new APIRequest()
