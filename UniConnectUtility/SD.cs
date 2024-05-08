@@ -11,5 +11,13 @@
         }
         public static string SessionToken = "JWTToken";
 
+        public enum WelshLanguageProficiency
+        {
+            Fluent,
+            InteractWithOtherWelshSpeakers,
+            UseBasicExpressions,
+            None
+        }
+
     }
 }

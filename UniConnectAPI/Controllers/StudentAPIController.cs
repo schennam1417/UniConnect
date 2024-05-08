@@ -104,6 +104,7 @@ namespace UniConnectAPI.Controllers
                 if (await _dbStudent.GetAsync(u => u.StudentName.ToLower() == addstudent.StudentName.ToLower()) != null)
                 {
                     ModelState.AddModelError("Custom Error", "Student Already Exists");
+                    return BadRequest(ModelState);
                 }
                 if(addstudent==null)
                 {

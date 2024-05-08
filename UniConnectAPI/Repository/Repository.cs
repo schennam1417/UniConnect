@@ -10,8 +10,7 @@ namespace UniConnectAPI.Repository
     {
         private readonly ApplicationDbContext _db;
         internal DbSet<T> dbSet;
-        private int studentIDCounter = 0;
-        private static readonly object lockObject = new object();
+        
 
         public Repository(ApplicationDbContext db)
         {

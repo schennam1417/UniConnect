@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Uniconnect.Models.DTO.StudentDTO>
+<br/>
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Student List</h1>
+        </div>
+        <div class="col text-end pt-1">
+            <a asp-controller="Student" asp-action="EnrollStudent" class="btn btn-outline-primary"><i class="bi bi-plus-square-fill"></i>Enroll New Student</a>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Student Name
+                </th>
+                <th>
+                    DateOfBirth
+                </th>
+                <th>
+                    UniversityCourse
+                </th>
+                <th>
+                    WelshLanguageProficiency
+                </th>
+                <th>
+                    StartDate
+                </th>
+                <th> 
+                    EndDate
+                 </th>
+                <th> 
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+                <tr>
+                    <td>@item.StudentName</td>
+                    <td>@item.DateOfBirth</td>
+                    <td>@item.UniversityCourse</td>
+                    <td>@item.WelshLanguageProficiency</td>
+                    <td>@item.StartDate</td>
+                    <td>@item.EndDate</td>
+                    <td>
+                        <a asp-controller="Student" asp-action="UpdateStudent" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-controller="Student" asp-action="DeleteStudent" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
