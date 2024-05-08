@@ -6,13 +6,13 @@ using UniConnectAPI.Repository.IRepository;
 
 namespace UniConnectAPI.Repository
 {
-    public class StudentRepository : IStudentRepository
+    public class StudentRepository : Repository<Student>, IStudentRepository
     {
         private readonly ApplicationDbContext _db;
         private int studentIDCounter = 0;
         private static readonly object lockObject = new object();
 
-        public StudentRepository(ApplicationDbContext db)
+        public StudentRepository(ApplicationDbContext db) : base(db)
         {
             this._db = db;
         }
@@ -20,40 +20,41 @@ namespace UniConnectAPI.Repository
         {
             student.StudentID = GenerateStudentID();
             await  _db.Students.AddAsync(student);
-            await Save();
-        }
-
-        public async Task<Student> GetAsync(Expression<Func<Student,bool>> filter = null)
-        {
-            IQueryable<Student> query = _db.Students;
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-            return await query.FirstOrDefaultAsync();
-
-        }
-
-        public async Task<List<Student>> GetAllAsync(Expression<Func<Student,bool>> filter = null)
-        {
-            IQueryable<Student> query = _db.Students;
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-            return await query.ToListAsync();
-        }
-
-        public async Task RemoveAsync(Student student)
-        {
-             _db.Students.Remove(student);
-            await Save();
-        }
-
-        public async Task Save()
-        {
             await _db.SaveChangesAsync();
+            //await Save();
         }
+
+        //public async Task<Student> GetAsync(Expression<Func<Student,bool>> filter = null)
+        //{
+        //    IQueryable<Student> query = _db.Students;
+        //    if (filter != null)
+        //    {
+        //        query = query.Where(filter);
+        //    }
+        //    return await query.FirstOrDefaultAsync();
+
+        //}
+
+        //public async Task<List<Student>> GetAllAsync(Expression<Func<Student,bool>> filter = null)
+        //{
+        //    IQueryable<Student> query = _db.Students;
+        //    if (filter != null)
+        //    {
+        //        query = query.Where(filter);
+        //    }
+        //    return await query.ToListAsync();
+        //}
+
+        //public async Task RemoveAsync(Student student)
+        //{
+        //     _db.Students.Remove(student);
+        //    await Save();
+        //}
+
+        //public async Task Save()
+        //{
+        //    await _db.SaveChangesAsync();
+        //}
 
         private string GenerateStudentID()
         {
@@ -94,10 +95,11 @@ namespace UniConnectAPI.Repository
             }
         }
 
-        public async Task UpdateAsync(Student student)
+        public async Task<Student> UpdateAsync(Student student)
         {
             _db.Update(student);
-            await Save();
+            await _db.SaveChangesAsync();
+            return student;
         }
     }
 }
