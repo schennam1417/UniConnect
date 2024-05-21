@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Uniconnect.Models;
 using Uniconnect.Models.DTO;
 using Uniconnect.Services.IServices;
+using UniConnectUtility;
 
 namespace Uniconnect.Controllers
 {
@@ -22,7 +23,7 @@ namespace Uniconnect.Controllers
         public async Task<ActionResult> Index()
         {
             List<StudentDTO> list = new();
-            var response = await _studentService.GetAllAsync<APIResponse>();
+            var response = await _studentService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null)
             {
                 list = JsonConvert.DeserializeObject<List<StudentDTO>>(Convert.ToString(response.Result));

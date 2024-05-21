@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 using Uniconnect.Models;
 using Uniconnect.Services.IServices;
@@ -41,9 +42,32 @@ namespace Uniconnect.Services
                 }
 
                 HttpResponseMessage apiResonse = null;
+                if(!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization=new AuthenticationHeaderValue("Bearer",apiRequest.Token);
+                }
                 apiResonse=await client.SendAsync(message);
                 var apiContent=await apiResonse.Content.ReadAsStringAsync();
-                var APIResponse=JsonConvert.DeserializeObject<T>(apiContent);
+                try
+                {
+                    APIResponse ApiResponse = JsonConvert.DeserializeObject<APIResponse>(apiContent);
+                    if (ApiResponse != null && (apiResonse.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+                       apiResonse.StatusCode == System.Net.HttpStatusCode.NotFound))
+                    {
+                        ApiResponse.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                        ApiResponse.IsSuccess = false;
+                        var res = JsonConvert.SerializeObject(ApiResponse);
+                        var returnObj = JsonConvert.DeserializeObject<T>(res);
+                        return returnObj;
+                    }
+                    
+                }
+                catch (Exception)
+                {
+                    var exceptionResponse = JsonConvert.DeserializeObject<T>(apiContent);
+                    return exceptionResponse;
+                }
+                var APIResponse = JsonConvert.DeserializeObject<T>(apiContent);
                 return APIResponse;
             }
             catch (Exception e)

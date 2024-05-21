@@ -16,63 +16,69 @@ namespace Uniconnect.Services
             this._clientFactory = clientFactory;
             studentUrl = configuration.GetValue<string>("ServiceUrls:UniConnectAPI");
         }
-        public Task<T> CreateAsync<T>(AddStudentDTO addstudentdto)
+        public Task<T> CreateAsync<T>(AddStudentDTO addstudentdto, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = addstudentdto,
-                Url = studentUrl + "/api/StudentAPI"
+                Url = studentUrl + "/api/v1/StudentAPI",
+                Token = token
             });
         }
 
-        public Task<T> GetAllAsync<T>()
+        public Task<T> GetAllAsync<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
                 
-                Url = studentUrl + "/api/StudentAPI"
+                Url = studentUrl + "/api/v1/StudentAPI",
+                Token = token
             });
         }
 
-        public Task<T> GetAsync<T>(string StudentID)
+        public Task<T> GetAsync<T>(string StudentID, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
                 
-                Url = studentUrl + "/api/StudentAPI/"+ StudentID
+                Url = studentUrl + "/api/v1/StudentAPI/" + StudentID,
+                Token = token
             });
         }
 
-        public Task<T> RemoveAsync<T>(string StudentID)
+        public Task<T> RemoveAsync<T>(string StudentID, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
                 
-                Url = studentUrl + "/api/StudentAPI/"+ StudentID
+                Url = studentUrl + "/api/v1/StudentAPI/" + StudentID,
+                Token = token
             });
         }
 
-        public Task<T?> SearchAsync<T>(string searchString)
+        public Task<T?> SearchAsync<T>(string searchString, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
 
-                Url = studentUrl + "/api/StudentAPI/search?searchQuery=" + searchString
+                Url = studentUrl + "/api/v1/StudentAPI/search?searchQuery=" + searchString,
+                Token = token
             });
         }
 
-        public Task<T> UpdateAsync<T>(UpdateStudentDTO updateStudentDTO)
+        public Task<T> UpdateAsync<T>(UpdateStudentDTO updateStudentDTO, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.PUT,
                 Data = updateStudentDTO,
-                Url = studentUrl + "/api/StudentAPI/"+ updateStudentDTO.StudentID
+                Url = studentUrl + "/api/v1/StudentAPI/" + updateStudentDTO.StudentID,
+                Token = token
             });
         }
     }

@@ -9,7 +9,7 @@
             PUT,
             DELETE
         }
-        
+        public static string SessionToken = "JWTToken";
 
         public enum WelshLanguageProficiency
         {
@@ -20,6 +20,6 @@
         }
 
     }
-
     
+
 }
